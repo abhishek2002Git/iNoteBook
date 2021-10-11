@@ -13,7 +13,7 @@ const NoteState = (props) => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1YzIyYjcyNmFhOGI3MjdmNDY2ZDA2In0sImlhdCI6MTYzMzQyODE5Nn0.uJa7nN-pTYxk1dJZmYeZXXGMtSCmeklXNXpx9Kz8XWA'
+            'auth-token': localStorage.getItem('token')
           } 
         });
         const json = await response.json()
@@ -23,13 +23,28 @@ const NoteState = (props) => {
 
       }
 
+      const [name, setName] = useState("")
+
+       // Get user data 
+       const getData = async () =>{
+        const response = await fetch(`${host}/api/auth/getuser`, {
+          method: 'POST',
+          headers: {
+            'auth-token': localStorage.getItem('token')
+          } 
+        });
+        const json = await response.json()
+        console.log(json.name)
+        setName(json.name)
+      }
+
       // Add a note
       const addNote = async (title, description, tag) =>{
         const response = await fetch(`${host}/api/notes/addnote`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1YzIyYjcyNmFhOGI3MjdmNDY2ZDA2In0sImlhdCI6MTYzMzQyODE5Nn0.uJa7nN-pTYxk1dJZmYeZXXGMtSCmeklXNXpx9Kz8XWA'
+            'auth-token': localStorage.getItem('token')
           },
           body: JSON.stringify({title, description, tag}) 
           
@@ -45,7 +60,7 @@ const NoteState = (props) => {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1YzIyYjcyNmFhOGI3MjdmNDY2ZDA2In0sImlhdCI6MTYzMzQyODE5Nn0.uJa7nN-pTYxk1dJZmYeZXXGMtSCmeklXNXpx9Kz8XWA'
+            'auth-token': localStorage.getItem('token')
           }
         });
         const json = response.json();
@@ -64,7 +79,7 @@ const NoteState = (props) => {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjE1YzIyYjcyNmFhOGI3MjdmNDY2ZDA2In0sImlhdCI6MTYzMzQyODE5Nn0.uJa7nN-pTYxk1dJZmYeZXXGMtSCmeklXNXpx9Kz8XWA'
+            'auth-token': localStorage.getItem('token')
           },
           body: JSON.stringify({title, description, tag}) 
         });
@@ -73,14 +88,7 @@ const NoteState = (props) => {
       
 
 
-        // for (const element of notes) {
-        //   if (element._id === id) {
-        //     element.title = title;
-        //     element.description = description;
-        //     element.tag = tag;
-        //   }
-        // }
-
+        
         
         
         let newNotes = JSON.parse(JSON.stringify(notes))
@@ -97,7 +105,7 @@ const NoteState = (props) => {
       }
     
     return (
-        <NoteContext.Provider value={{notes, addNote, deleteNote, editNote, getNotes}}>
+        <NoteContext.Provider value={{notes, addNote, deleteNote, editNote, getNotes, getData, name}}>
             {props.children}
         </NoteContext.Provider>
 

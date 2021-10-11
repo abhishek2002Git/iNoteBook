@@ -2,18 +2,30 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/notes/noteContext";
 import NoteItem from "./NoteItem";
 import AddNote from "./AddNote";
+import { useHistory } from "react-router";
 
 const Notes = () => {
   const context = useContext(noteContext);
-  const { notes, getNotes, editNote } = context;
+  let history = useHistory();
+  const { notes, name,  getNotes, editNote, getData } = context;
   useEffect(() => {
-    getNotes();
+    if (localStorage.getItem('token')) {
+      getNotes()
+      getData()
+    }
+    else{
+       history.push("/login")
+    }
     // eslint-disable-next-line
   }, []);
   
   const ref = useRef(null);
   const refClose = useRef(null);
   const [note, setNote] = useState({id: "", etitle: "", edescription: "", etag: ""})
+  const [showHide, setShowHide] = useState('hide')
+  const plusAction = () =>{
+    setShowHide('show')
+  }
 
   const updateNote = (currentNote) => {
     ref.current.click();
@@ -30,7 +42,7 @@ const Notes = () => {
   };
   return (
     <>
-      <AddNote />
+      <AddNote showHide={showHide} setShowHide={setShowHide} />
       <button
         ref={ref}
         type="button"
@@ -42,7 +54,7 @@ const Notes = () => {
       </button>
 
       <div
-        className="modal fade"
+        className="modal fade "
         id="exampleModal"
         tabIndex="-1"
         role="dialog"
@@ -50,12 +62,20 @@ const Notes = () => {
         aria-hidden="true"
         // ref={ref}
       >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
+        <div className="modal-dialog" role="document"  >
+          <div className="modal-content" style={{borderRadius:'20px'}}>
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Edit Note
-              </h5>
+              <input
+                    style={{fontWeight: 'normal', fontSize: '25px', color: 'black', textAlign: 'center', outline:'none'}}
+                    id="etitle"
+                    type="text"
+                    className="form-control border-0"
+                    name="etitle"
+                    aria-describedby="emailHelp"
+                    value={note.etitle}
+                    onChange={onChange}
+                    // minLength={5} required
+                  />
               <button
                 type="button"
                 className="btn-close"
@@ -68,45 +88,16 @@ const Notes = () => {
             <div className="modal-body">
               <form>
                 <div className="mb-3">
-                  <label htmlFor="title" className="form-label">
-                    Title
-                  </label>
-                  <input
-                    id="etitle"
+                  <textarea
+                  style={{height: '400px'}}
                     type="text"
-                    className="form-control"
-                    name="etitle"
-                    aria-describedby="emailHelp"
-                    value={note.etitle}
-                    onChange={onChange}
-                    minLength={5} required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="exampleInputPassword1" className="form-label">
-                    Description
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
+                    className="form-control border-0"
                     id="edescription"
                     name="edescription"
                     value={note.edescription}
                     onChange={onChange}
-                    minLength={5} required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="exampleInputPassword1" className="form-label">
-                    Tag
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="etag"
-                    name="etag"
-                    value={note.etag}
-                    onChange={onChange}
+                    minLength={1} required
+                    cols="50" rows="10"
                   />
                 </div>
               </form>
@@ -120,23 +111,40 @@ const Notes = () => {
               >
                 Close
               </button>
-              <button disabled={note.etitle.length<5 || note.edescription.length<5} onClick={handleClick} type="button" className="btn btn-primary">
+              <button style={{color:'white'}} disabled={note.edescription.length<1} onClick={handleClick} type="button" className="btn btn-warning">
                 Update Note
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="row my-3">
-        <h2>Your Notes</h2>
-        <div className="container">
+      <div className={`row   ${showHide==='hide'?'':'d-none'}  `} >
+        <div className="container my-3">
         {notes.length===0 && <h5>No Notes To Display</h5>}
-        </div>
+        </div >
         {notes.map((note) => {
           return (
             <NoteItem key={note._id} updateNote={updateNote} note={note} />
           );
         })}
+      </div>
+
+      <div
+        className={`container  btn-warning ${showHide==='hide'?'':'d-none' }`}
+        onClick={plusAction}
+        style={{
+          color: "white",
+          height: "60px",
+          width: "60px",
+          borderRadius: "50%",
+          lineHeight: "42px",
+          textAlign: "center",
+          fontSize: "50px",
+        }}
+        id="addNote"
+
+      >
+        +
       </div>
     </>
   );

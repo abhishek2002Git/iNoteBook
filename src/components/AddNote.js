@@ -1,73 +1,74 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import noteContext from "../context/notes/noteContext";
 
-const AddNote = () => {
-    const context = useContext(noteContext)
-    const {addNote} = context;
-    const [note, setNote] = useState({title: "", description: "", tag: ""})
+const AddNote = (props) => {
+  const context = useContext(noteContext);
+  const { addNote } = context;
+  const [note, setNote] = useState({ title: "", description: "", tag: "" });
+  const { showHide, setShowHide} = props;
+  console.log(showHide)
+  const convertShowHideToHide = () =>{
+    setShowHide('hide')
+  }
 
-    const handleClick = (e) =>{
-        e.preventDefault();
-       addNote(note.title, note.description, note.tag);
-       setNote({title: "", description: "", tag: ""})
-    }
-    const onChange = (e) => {
-        setNote({...note, [e.target.name]: e.target.value})
-    }
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    addNote(note.title, note.description, note.tag);
+    setNote({ title: "", description: "", tag: "" });
+    setShowHide('hide')
+ 
+  };
+  const onChange = (e) => {
+    setNote({ ...note, [e.target.name]: e.target.value });
+  };
+
+ 
   return (
     <div>
-      <div className="container my-3">
-        <h2>Add a Note</h2>
-        <form>
+      <div className={`container my-3 ${showHide==='hide'?'d-none':''}  `} >
+        {/* <h2>Add a Note</h2> */}
+        <form style={{backgroundColor: 'white'}} >
           <div className="mb-3">
-            <label htmlFor="title" className="form-label">
-              Title
-            </label>
             <input
+             style={{fontWeight: 'normal', fontSize: '25px', color: 'black', outline:'none',  border: 'none'}}
               id="title"
               type="text"
               className="form-control"
               name="title"
               aria-describedby="emailHelp"
               onChange={onChange}
-              minLength={5} required
+              // minLength={5} required
               value={note.title}
+              placeholder="Title"
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label">
+            {/* <label htmlFor="exampleInputPassword1" className="form-label">
               Description
-            </label>
-            <input
+            </label> */}
+            <textarea
+            style={{height: '400px', border: 'none', outlineColor: 'white'}}
               type="text"
               className="form-control"
               id="description"
               name="description"
               onChange={onChange}
-              minLength={5} required
+              minLength={1} required
               value={note.description}
+              placeholder="Description"
+              outline="none"
             />
           </div>
-          <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label">
-              Tag
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="tag"
-              name="tag"
-              onChange={onChange}
-              minLength={5} required
-              value={note.tag}
-            />
-          </div>
-          <button disabled={note.title.length<5 || note.description.length<5} type="submit" onClick={handleClick} className="btn btn-primary">
+
+          <button style={{color:'white'}} disabled={note.description.length<1} type="submit" onClick={handleClick} className="btn btn-warning">
             Add Note
           </button>
+          <button onClick={convertShowHideToHide} className="btn btn-warning mx-3" style={{color:'white'}}>Cancel</button>
         </form>
       </div>
-      ;
+
+     
     </div>
   );
 };

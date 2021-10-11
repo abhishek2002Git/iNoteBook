@@ -18,8 +18,9 @@ const Login = (props) => {
           console.log(json)
           if (json.success) { // redirecting to homepage if user is valid
             //  save the auth-token redirect
-            localStorage.setItem('token', json.authtoken)
+            localStorage.setItem('token', json.authToken)
             history.push("/")
+            console.log(json.authToken);
             props.showAlert("LoggedIn Successfully", "success")
           }
           else{

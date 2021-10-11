@@ -1,7 +1,12 @@
 import React, {useEffect} from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 
 export const Navbar = () => {
+  let history = useHistory();
+  const handleLogout = () =>{
+    localStorage.removeItem('token');
+    history.push('/login')
+  }
 
   let location = useLocation();
   useEffect(() => {
@@ -10,7 +15,7 @@ export const Navbar = () => {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav  className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
             iNoteBook
@@ -30,7 +35,7 @@ export const Navbar = () => {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link className={`nav-link ${location.pathname==="/"?"active":""}`} aria-current="page" to="/">
-                  Home
+                  Notes
                 </Link>
               </li>
               <li className="nav-item">
@@ -38,23 +43,24 @@ export const Navbar = () => {
                   About
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className={`nav-link ${location.pathname==="/account"?"active":""}`} to="/account">
+                  Account
+                </Link>
+              </li>
             </ul>
+            {!localStorage.getItem('token')?
             <form className="d-flex">
-              {/* <input
-                className="form-control me-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-              />
-              <button className="btn btn-outline-success" type="submit">
-                Search
-              </button> */}
-              <Link className="btn btn-primary mx-1" to="/login" role="button">Login</Link>
-              <Link className="btn btn-primary mx-3" to="/signup" role="button">Signup</Link>
+              <Link style={{color:'white'}} className="btn btn-warning mx-1" to="/login" role="button">Login</Link>
+              <Link style={{color:'white'}} className="btn btn-warning mx-3" to="/signup" role="button">Signup</Link>
             </form>
+             :<form className="d-flex"><button style={{color:'white'}} onClick={handleLogout} className="btn btn-warning">Logout</button>
+              <Link style={{color:'white'}} className="btn btn-warning mx-3" to="/account" role="button">Account</Link></form>} 
+            
           </div>
         </div>
       </nav>
+      {/* <hr style={{color:'black', backgroundColor: 'black'}} /> */}
     </div>
   );
 };

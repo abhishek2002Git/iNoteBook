@@ -20,9 +20,10 @@ router.post(
   "/addnote",
   fetchuser,
   [
-    body("title", "Enter a valid title").isLength({ min: 3 }),
-    body("description", "description must be atleast 5 characters").isLength({
-      min: 5,
+    // body("title", "Enter a valid title").isLength({ min: 3 }),
+    body("title", "Enter a valid title"),
+    body("description", "description must be atleast 1 character1").isLength({
+      min: 1,
     }),
   ],
   async (req, res) => {

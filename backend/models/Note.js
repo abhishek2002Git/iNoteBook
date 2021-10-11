@@ -8,7 +8,8 @@ const NotesSchema = new Schema({  // creating schema for user
     },
     title:{
         type: String,
-        required: true
+        // required: true
+        default: "title"
     },
     description:{
         type: String,
